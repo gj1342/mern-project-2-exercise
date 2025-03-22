@@ -96,7 +96,7 @@ export const getSuggestedUsers = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const {fullName, email, username, currentPassword, newPassword, bio, link} = req.body;
-    let {profilePicture, coverPicture} = req.body;
+    let {profileImg, coverImg} = req.body;
 
     const userId = req.user._id;
 
@@ -124,31 +124,41 @@ export const updateUser = async (req, res) => {
             user.password = hashedPassword;
         }
         
-        if (profilePicture){
+        if (profileImg){
             if(user.profilePicture){
-                await cloudinary.uploader.destroy(user.profilePicture.split("/").pop().split(".")[0]);
+                const publicId = user.profilePicture.split('/').pop().split('.')[0];
+                if (publicId) {
+                    await cloudinary.uploader.destroy(publicId);
+                }
             }
 
-            const uploadedResponse = await cloudinary.uploader.upload(user.profilePicture);
-            profilePicture= uploadedResponse.secure_url;
+            const uploadedResponse = await cloudinary.uploader.upload(profileImg, {
+                resource_type: "auto"
+            });
+            profileImg = uploadedResponse.secure_url;
         }
 
-        if(coverPicture){
+        if(coverImg){
             if(user.coverPicture){
-                await cloudinary.uploader.destroy(user.coverPicture.split("/").pop().split(".")[0]);
+                const publicId = user.coverPicture.split('/').pop().split('.')[0];
+                if (publicId) {
+                    await cloudinary.uploader.destroy(publicId);
+                }
             }
 
-            const uploadedResponse = await cloudinary.uploader.upload(user.coverPicture);
-            coverPicture= uploadedResponse.secure_url;
+            const uploadedResponse = await cloudinary.uploader.upload(coverImg, {
+                resource_type: "auto"
+            });
+            coverImg = uploadedResponse.secure_url;
         }
 
-        user.fullName= fullName || user.fullName;
-        user.email= email || user.email;
-        user.username= username || user.username;
-        user.bio= bio || user.bio;
-        user.link= link || user.link;
-        user.profilePicture= profilePicture || user.profilePicture;
-        user.coverPicture= coverPicture || user.coverPicture;
+        user.fullName = fullName || user.fullName;
+        user.email = email || user.email;
+        user.username = username || user.username;
+        user.bio = bio || user.bio;
+        user.link = link || user.link;
+        user.profilePicture = profileImg || user.profilePicture;
+        user.coverPicture = coverImg || user.coverPicture;
 
         user = await user.save();
 

@@ -82,6 +82,7 @@ const ProfilePage = () => {
 				<div className='flex flex-col'>
 					{!isLoading && !isRefetching && user && (
 						<>
+							{console.log("User object:", user)}
 							<div className='flex gap-10 px-4 py-2 items-center'>
 								<Link to='/'>
 									<FaArrowLeft className='w-4 h-4' />
@@ -94,7 +95,7 @@ const ProfilePage = () => {
 							{/* COVER IMG */}
 							<div className='relative group/cover'>
 								<img
-									src={coverImg || user?.coverImg || "/cover.png"}
+									src={coverImg || user?.coverPicture || "/cover.png"}
 									className='h-52 w-full object-cover'
 									alt='cover image'
 								/>
@@ -124,7 +125,7 @@ const ProfilePage = () => {
 								{/* USER AVATAR */}
 								<div className='avatar absolute -bottom-16 left-4'>
 									<div className='w-32 rounded-full relative group/avatar'>
-										<img src={profileImg || user?.profileImg || "/avatar-placeholder.png"} />
+										<img src={profileImg || user?.profilePicture || "/avatar-placeholder.png"} />
 										<div className='absolute top-5 right-3 p-1 bg-primary rounded-full group-hover/avatar:opacity-100 opacity-0 cursor-pointer'>
 											{isMyProfile && (
 												<MdEdit
